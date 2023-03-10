@@ -19,13 +19,11 @@ import java.util.List;
  */
 public class FlightDAO {
 
-
-
     /**
      * TODO: Retrieve all flights from the flight table.
      *
      * You only need to change the sql String and set preparedStatement parameters.
-     *
+     * 
      * @return all flights.
      */
     public List<Flight> getAllFlights(){
@@ -33,7 +31,7 @@ public class FlightDAO {
         List<Flight> flights = new ArrayList<>();
         try {
             //Write SQL logic here
-            String sql = "change me";
+            String sql = "SELECT * FROM flight";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
@@ -66,11 +64,13 @@ public class FlightDAO {
         Connection connection = ConnectionUtil.getConnection();
         try {
             //Write SQL logic here
-            String sql = "change me";
+            String sql = "SELECT * FROM Flight WHERE flight_id = ?";
             
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
+            
             //write preparedStatement's setString and setInt methods here.
+
+            preparedStatement.setInt(1, id);
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
@@ -104,16 +104,19 @@ public class FlightDAO {
      * @param flight an object modelling a Flight. the flight object does not contain a flight ID.
      */
     public Flight insertFlight(Flight flight){
-        Connection connection = ConnectionUtil.getConnection();
+        Connection connection = ConnectionUtil.getConnection(); 
         try {
             //Write SQL logic here. When inserting, you only need to define the departure_city and arrival_city
             //values (two columns total!)
-            String sql = "change me" ;
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
+            String sql = "INSERT INTO Flight (departure_city, arrival_city) VALUES (?, ?)" ;
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            
             //write preparedStatement's setString and setInt methods here.
 
-
+            preparedStatement.setString(1, flight.getDeparture_city()); 
+            preparedStatement.setString(2, flight.getArrival_city());
+           
             preparedStatement.executeUpdate();
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
             if(pkeyResultSet.next()){
@@ -147,12 +150,16 @@ public class FlightDAO {
         Connection connection = ConnectionUtil.getConnection();
         try {
             //Write SQL logic here
-            String sql = "change me";
+            String sql = "UPDATE Flight SET departure_city = ?, arrival_city = ? WHERE flight_id = ? ";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
+                        
             //write PreparedStatement setString and setInt methods here.
 
-
+            preparedStatement.setString(1, flight.departure_city);
+            preparedStatement.setString(2, flight.arrival_city);
+            preparedStatement.setInt(3, id);
+            
+                                   
             preparedStatement.executeUpdate();
         }catch(SQLException e){
             System.out.println(e.getMessage());
@@ -181,10 +188,12 @@ public class FlightDAO {
         List<Flight> flights = new ArrayList<>();
         try {
             //Write SQL logic here
-            String sql = "change me";
+            String sql = "SELECT * FROM Flight WHERE departure_city = ? AND arrival_city = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             //write PreparedStatement setString and setInt methods here.
+            preparedStatement.setString(1, departure_city);
+            preparedStatement.setString(2, arrival_city);
 
 
             ResultSet rs = preparedStatement.executeQuery();
